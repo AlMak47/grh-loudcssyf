@@ -17,7 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    protected $namespace = 'App\Http\Controllers';
+    public const HOME = '/app';
 
     /**
      * The controller namespace for the application.
@@ -35,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->namespace($this->namespace);
         $this->configureRateLimiting();
 
         $this->routes(function () {
