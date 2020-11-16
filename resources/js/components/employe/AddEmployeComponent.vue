@@ -24,19 +24,8 @@
                 <div class="card-content">
                     <div class="card-title">Nouvel Employe</div>
                     <!-- BLOCK ERROR -->
-                    <md-dialog :md-active="errors.length > 0">
-                        <md-dialog-title>Erreur(s)</md-dialog-title>
-                        <md-dialog-content>
-                            <div v-for="(err,index) in errors" :key="index" class="card white-text center red lighten-2">
-                                {{
-                                    err
-                                }}
-                            </div>
-                        </md-dialog-content>
-                        <md-dialog-actions>
-                            <md-button class="md-primary" @click="hideErrorLog()">Fermer</md-button>
-                        </md-dialog-actions>
-                    </md-dialog>
+                    <error-block :errors="errors"></error-block>
+                    <!-- // -->
                     
                     <div class="row">
                         <div class="col s12 m12 l12">
@@ -202,11 +191,9 @@
                     } else {
                         this.errors.push(error.response.data)
                     }
+                    
+                    this.$store.commit('setErrors',this.errors)
                 }
-            },
-            // MASQUEZ LES ERREURS
-            hideErrorLog : function () {
-                this.errors = []
             }
         },
         computed : {

@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
         return view('layouts.myapp');
     });
 
+    Route::post('/setting/profile/change-password','UserController@changePassword');
+
     // ADMIN ROUTING
     Route::prefix('admin')->group(function () {
         // ROUTES SECTION EMPLOYES
@@ -39,6 +41,11 @@ Route::middleware(['auth'])->group(function () {
 
         // ROUTES DEPARTEMENT
         Route::post('/departement/add','DepartementController@addDepartement')->middleware('admin');
+        Route::get('/departement/list','DepartementController@listDepartement')->middleware('admin');
+
+        // ROUTES POSTES
+        Route::post('/poste/add','PosteController@addPoste')->middleware('admin');
+        Route::get('/poste/list','PosteController@listPoste')->middleware('admin');
     });
 });
 

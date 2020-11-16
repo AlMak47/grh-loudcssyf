@@ -20,6 +20,7 @@ Vue.component('login-component',require('./components/auth/LoginComponent.vue').
 // 
 // Vue.component('dashboard',require('./components/dashboard/DashboardComponent.vue').default)
 Vue.component('home-component',require('./components/HomeComponent.vue').default)
+Vue.component('error-block',require('./components/ErrorBlockComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

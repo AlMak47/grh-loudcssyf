@@ -1,35 +1,36 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Exceptions\ErrorException;
-use App\Models\Departement;
+use App\Models\Poste;
 use Illuminate\Support\Str;
 
-class DepartementController extends Controller
+class PosteController extends Controller
 {
     //
-
-    public function addDepartement(Departement $dep) {
+    
+    public function addPoste(Poste $p) {
         try {
-
-            $validation = request()->validate([
+            $validate = request()->validate([
                 'intitule'  =>  'required|string',
+                'salaire'   =>  'required|numeric|min : 100000'
             ],[
-                'required'  =>  '`:attribute` requi(s) !'
+                'required'  =>  '`:attribute` requi(s) !',
+                'min'   =>  'Valeur minimum requis : 100,000'
             ]);
-            // VERIFIER L'UNICITE DU DEPARTEMENT
-            
-            $dep->reference = Str::slug(request()->intitule);
-            $dep->title = request()->intitule;
-            $dep->description = request()->description;
 
-            if($dep->isExist()) {
-               throw new ErrorException("Ce Departement existe deja !");
+            // VERIFIER L'UNICITE DU POSTE DANS LE SYSTEME
+            $p->reference = Str::slug(request()->intitule);
+            $p->nom = request()->intitule;
+            $p->salaire = request()->salaire;
+            $p->description = request()->description;
+
+            if($p->isExist()) {
+                throw new ErrorException("Ce poste existe deja dans le systeme !");
             }
 
-            $dep->save();
+            $p->save();
 
             return response()
                 ->json('done');
@@ -40,22 +41,21 @@ class DepartementController extends Controller
         }
     }
 
-    public function listDepartement(Departement $dep) {
+    public function listPoste(Poste $p) {
         try {
-            $data = $dep->select()
+            $data = $p->select()
                 ->orderBy('created_at','desc')
-                ->paginate(500);
-            
-            $all = [];
+                ->paginate();
 
+            $all = [];
+            
             foreach($data as $key => $value) {
                 $all[$key] = [
-                    'reference' =>  '',
-                    'title' =>  $value->title,
-                    'description'   =>  $value->description
+                    'nom'  =>  $value->nom,
+                    'description'   =>  $value->description,
+                    'salaire'   =>  $value->salaire
                 ];
             }
-
             return response()
                 ->json([
                     'all'   =>  $all,

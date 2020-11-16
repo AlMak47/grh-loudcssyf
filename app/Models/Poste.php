@@ -11,5 +11,13 @@ class Poste extends Model
 
     protected $table = 'postes';
     protected $keyType = 'string';
-    protected $primary = 'reference';
+    protected $primaryKey= 'reference';
+
+    public function isExist() {
+        $data = $this->find($this->reference);
+        if($data) {
+            return $data;
+        }
+        return false;
+    }
 }
