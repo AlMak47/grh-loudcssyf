@@ -19,8 +19,12 @@
 
         <!-- FORMULAIRE D'AJOUT D'UN EMPLOYE -->
 
+        <md-button to="/employe/list" class="md-raised blue darken-1 white-text">
+            Tous les employes
+        </md-button>
+
         <div class="row">
-            <form class="col s12 m12 offset-l3 l6 card" @submit.prevent="sendAddEmployeRequest()">
+            <form class="col s12 m12 l10 card" @submit.prevent="sendAddEmployeRequest()">
                 <div class="card-content">
                     <div class="card-title">Nouvel Employe</div>
                     <!-- BLOCK ERROR -->
@@ -28,24 +32,24 @@
                     <!-- // -->
                     
                     <div class="row">
-                        <div class="col s12 m12 l12">
+                        <div class="col s12 m12 l6">
                             <div class="row">
-                                <div class="input-field col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">account_circle</i>
                                     <input v-model="dataForm.nom" id="icon_prefix" type="text" class="validate">
                                     <label for="icon_prefix">Nom</label>
                                 </div>
-                                <div class="input-field col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">account_box</i>
                                     <input v-model="dataForm.prenom" id="icon_prefix" type="text" class="validate">
                                     <label for="icon_prefix">Prenom</label>
                                 </div>
-                                <div class="input-field col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">phone</i>
                                     <input v-model="dataForm.telephone" id="icon_prefix" type="text" class="validate">
                                     <label for="icon_prefix">Telephone</label>
                                 </div>
-                                <div class="input-field col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">perm_identity</i>
                                     <input v-model="dataForm.piece_identite" id="icon_prefix" type="text" class="validate">
                                     <label for="icon_prefix">Piece D'identite</label>
@@ -62,14 +66,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col s12 m12 l12">
+                        <div class="col s12 m12 l6">
                             <div class="row">
-                                <div class="input-field col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">more_vert</i>
                                     <input v-model="dataForm.numero_facture" type="text" id="icon_prefix" class="validate">
                                     <label for="icon_prefix">Numero de facture</label>
                                 </div>
-                                <div class="col s12 m12 l12">
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">place</i>
+                                    <input v-model="dataForm.quartier" type="text" id="icon_prefix" class="validate">
+                                    <label for="icon_prefix">Quartier</label>
+                                </div>
+                                <div class="col s12 m12 l6">
                                     <div class="md-layout-item">
                                         <md-field>
                                             <md-icon class="prefix">work</md-icon>
@@ -81,7 +90,7 @@
                                         
                                     </div>
                                 </div>
-                                <div class="col s12 m12 l12">
+                                <div class="col s12 m12 l6">
                                     <div class="md-layout-item">
                                         <md-field>
                                             <md-icon class="prefix">domain</md-icon>
@@ -92,11 +101,6 @@
                                         </md-field>
                                         
                                     </div>
-                                </div>
-                                <div class="input-field col s12 m12 l12">
-                                    <i class="material-icons prefix">place</i>
-                                    <input v-model="dataForm.quartier" type="text" id="icon_prefix" class="validate">
-                                    <label for="icon_prefix">Quartier</label>
                                 </div>
                                 <div class="col s12 m12 l12">
                                     <!-- <i class="material-icons prefix">map</i> -->
@@ -113,7 +117,13 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="waves-effect waves-light btn blue darken-1 col s12 m12">Envoyez <i class="material-icons right">send</i></button>
+                        <!-- <button type="submit" class="waves-effect waves-light btn blue darken-1 col s12 m12">Envoyez <i class="material-icons right">send</i></button> -->
+
+                        <div class="col s12 m12 l12">
+                            <md-button type="submit" class=" md-raised blue darken-1 white-text col s12 m12 l2">
+                                Envoyez
+                            </md-button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -170,53 +180,34 @@
             },
             // ENREGISTREMENT D'UN EMPLOYE
             sendAddEmployeRequest : async function () {
-                try {
-                    this.errors = []
-                    
-                    this.dataForm._token = this._token
+                
+                this.errors = []
+                
+                this.dataForm._token = this._token
 
-                    axios.post('/admin/employe/add',this.dataForm)
-                    .then(response =>  {
-                        Object.assign(this.$data,this.$options.data())
-                        this.alertSuccess = true
-                        this.getData()
-                    })
-                    .catch(error => {
-                        // console.log(error.response.data.errors)
-                        var theError = []
+                axios.post('/admin/employe/add',this.dataForm)
+                .then(response =>  {
+                    Object.assign(this.$data,this.$options.data())
+                    this.alertSuccess = true
+                    this.getData()
+                })
+                .catch(error => {
+                    // console.log(error.response.data.errors)
+                    var theError = []
+                    
+                    if(error.response.data.errors) {
                         
-                        if(error.response.data.errors) {
-                            
-                            let errorTab = error.response.data.errors
-                            for (var prop in errorTab) {
-                                theError.push(errorTab[prop][0])
-                            }
-                        } else {
-                            theError.push(error.response.data)
+                        let errorTab = error.response.data.errors
+                        for (var prop in errorTab) {
+                            theError.push(errorTab[prop][0])
                         }
-                        
-                        this.$store.commit('setErrors',theError)
-                    })          
-
-                    // let response = await axios.post('/admin/employe/add/',this.dataForm)
-                    // if(response && response.data == 'done') {
-                    //     Object.assign(this.$data,this.$options.data())
-                    //     this.alertSuccess = true
-                    //     this.getData()
-                    // }
-                }
-                catch(error) {
-                    // if(error.response.data.errors) {
-                    //     let errorTab = error.response.data.errors
-                    //     for (var prop in errorTab) {
-                    //         this.errors.push(errorTab[prop][0])
-                    //     }
-                    // } else {
-                    //     this.errors.push(error.response.data)
-                    // }
+                    } else {
+                        theError.push(error.response.data)
+                    }
                     
-                    // this.$store.commit('setErrors',this.errors)
-                }
+                    this.$store.commit('setErrors',theError)
+                })          
+              
             }
         },
         computed : {

@@ -7,6 +7,7 @@ Vue.use(VueRouter)
 // COMPONENTS 
 import addEmploye from './components/employe/AddEmployeComponent.vue'
 import listEmploye from './components/employe/ListEmployeComponent.vue'
+import detailsEmploye from './components/employe/DetailEmploye.vue'
 
 import registreAbsence from './components/registre/RegistreAbsenceComponent.vue'
 import registrePointage from './components/registre/RegistrePointageComponent.vue'
@@ -35,6 +36,10 @@ const router = new VueRouter({
             component : listEmploye
         },
         {
+            path : '/employe/edit/:id',
+            component : detailsEmploye
+        },
+        {
             path : '/registre/pointage',
             component : registrePointage
         },
@@ -53,15 +58,15 @@ const router = new VueRouter({
         {
             path : '/setting/departement',
             component : departementComponent
-        }
+        },
     ]
 })
 
-router.afterEach((to,from) => {
-    $(function () {
-        if($('.sidenav').sidenav()) {
-            $('.sidenav').sidenav('close');
-        }
-    })
-})
+// router.afterEach((to,from) => {
+//     $(function () {
+//         if($('.sidenav').sidenav()) {
+//             $('.sidenav').sidenav('close');
+//         }
+//     })
+// })
 export default router

@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Exceptions\ErrorException;
 use App\Models\Poste;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+
 
 class PosteController extends Controller
 {
@@ -50,11 +52,7 @@ class PosteController extends Controller
             $all = [];
             
             foreach($data as $key => $value) {
-                $all[$key] = [
-                    'nom'  =>  $value->nom,
-                    'description'   =>  $value->description,
-                    'salaire'   =>  $value->salaire
-                ];
+                $all[$key] = $value;
             }
             return response()
                 ->json([
@@ -67,6 +65,40 @@ class PosteController extends Controller
                     'first_item'	=>	$data->firstItem(),
                     'total'	=>	$data->total()
                 ]);
+        }
+        catch(ErrorException $e) {
+            header("Erreur",true,422);
+            die(json_encode($e->getMessage()));
+        }
+    }
+
+    // UPDATE POSTE
+    public function updatePoste($id,Poste $p) {
+        try {
+
+            $validation = request()->validate([
+                'reference' =>  'required|string|exists:postes,reference',
+                'nom'   =>  'required|string',
+                'salaire'   =>  'required|numeric',
+                'password'  =>  'required|string'
+            ],[
+                'required'  =>  '`:attribute` requi(s) !',
+                'existes'   =>  '`:attribute` n\'existe pas dans la base de donnees !'
+            ]);
+            
+            if(!Hash::check(request()->password,request()->user()->password)) {
+                throw new ErrorException("Mot de passe invalide !");
+            }
+
+            $data = $p->find(request()->reference);
+            $data->nom = request()->nom;
+            $data->salaire = request()->salaire;
+            $data->description = request()->description;
+
+            $data->update();
+
+            return response()
+                ->json('done');
         }
         catch(ErrorException $e) {
             header("Erreur",true,422);

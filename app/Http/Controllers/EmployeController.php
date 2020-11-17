@@ -8,6 +8,7 @@ use App\Models\Employe;
 use App\Models\Departement;
 use App\Models\Services;
 use App\Exceptions\ErrorException;
+use Illuminate\Support\Facades\Crypt;
 
 
 class EmployeController extends Controller
@@ -82,15 +83,19 @@ class EmployeController extends Controller
         }
     }
 
+    // LISTING DES EMPLOYES
+
     public function listEmployeRequest(Employe $e) {
         try {
             $data = $e->select()
                 ->orderBy('created_at','desc')
                 ->paginate();
             $all = [];
+            $encrypted_data = [];
 
             foreach($data as $key => $value) {
                 $all[$key] = [
+                    // 'encrypted_matricule'   =>  Crypt::encryptString($value->matricule),
                     'matricule' =>  $value->matricule,
                     'nom'   =>  $value->nom,
                     'prenom'    =>  $value->prenom,
@@ -112,11 +117,14 @@ class EmployeController extends Controller
                     // 'filiation' =>  $value->filiation,
                     // 'date_naissance'    =>  $value->date_naissance,
                 ];
+
+                $encrypted_data[$value->matricule] = Crypt::encryptString($value->matricule);
             }
 
             return response()
                 ->json([
                     'all'   =>  $all,
+                    'encrypted' =>  $encrypted_data,
                     'next_url'	=> $data->nextPageUrl(),
                     'last_url'	=> $data->previousPageUrl(),
                     'per_page'	=>	$data->perPage(),
@@ -124,6 +132,36 @@ class EmployeController extends Controller
                     'first_page'	=>	$data->url(1),
                     'first_item'	=>	$data->firstItem(),
                     'total'	=>	$data->total()
+                ]);
+        }
+        catch(ErrorException $e) {
+            header("Erreur",true,422);
+            die(json_encode($e->getMessage()));
+        }
+    }
+
+    // GET DETAILS INFOS EMPLOYE
+
+    public function getDetails($id,Employe $e) {
+        try {
+            $data_employe = $e->find(Crypt::decryptString($id));
+            $data_fonction = $data_employe->services()
+                ->where('status',true)
+                ->first()
+                ->poste()
+                ->first();
+            
+            $data_departement = $data_employe->services()
+                ->where('status',true)
+                ->first()
+                ->departement()
+                ->first();
+
+            return response()
+                ->json([
+                    'employe'   =>  $data_employe,
+                    'fonction'  =>  $data_fonction,
+                    'departement'   =>  $data_departement
                 ]);
         }
         catch(ErrorException $e) {

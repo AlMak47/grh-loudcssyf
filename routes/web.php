@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/employe/add/get-data','EmployeController@addGetData')->middleware('admin');
         Route::post('/employe/add/','EmployeController@addEmployeRequest')->middleware('admin');
         Route::get('/employe/list','EmployeController@listEmployeRequest')->middleware('admin');
+        Route::get('/employe/edit/{id}','EmployeController@getDetails')->middleware('admin');
 
         // ROUTES DEPARTEMENT
         Route::post('/departement/add','DepartementController@addDepartement')->middleware('admin');
@@ -46,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
         // ROUTES POSTES
         Route::post('/poste/add','PosteController@addPoste')->middleware('admin');
         Route::get('/poste/list','PosteController@listPoste')->middleware('admin');
+        Route::post('/poste/edit/{reference}','PosteController@updatePoste')->middleware('admin');
     });
 });
 

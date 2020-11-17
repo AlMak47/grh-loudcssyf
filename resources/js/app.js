@@ -8,6 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -33,6 +34,10 @@ import store from './store.js'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+
+import vueNumeralFilterInstaller from 'vue-numeral-filter'
+
+Vue.use(vueNumeralFilterInstaller)
 
 Vue.use(VueMaterial)
 const app = new Vue({
