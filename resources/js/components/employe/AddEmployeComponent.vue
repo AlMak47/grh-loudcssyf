@@ -175,24 +175,47 @@
                     
                     this.dataForm._token = this._token
 
-                    let response = await axios.post('/admin/employe/add/',this.dataForm)
-                    if(response && response.data == 'done') {
+                    axios.post('/admin/employe/add',this.dataForm)
+                    .then(response =>  {
                         Object.assign(this.$data,this.$options.data())
                         this.alertSuccess = true
                         this.getData()
-                    }
+                    })
+                    .catch(error => {
+                        // console.log(error.response.data.errors)
+                        var theError = []
+                        
+                        if(error.response.data.errors) {
+                            
+                            let errorTab = error.response.data.errors
+                            for (var prop in errorTab) {
+                                theError.push(errorTab[prop][0])
+                            }
+                        } else {
+                            theError.push(error.response.data)
+                        }
+                        
+                        this.$store.commit('setErrors',theError)
+                    })          
+
+                    // let response = await axios.post('/admin/employe/add/',this.dataForm)
+                    // if(response && response.data == 'done') {
+                    //     Object.assign(this.$data,this.$options.data())
+                    //     this.alertSuccess = true
+                    //     this.getData()
+                    // }
                 }
                 catch(error) {
-                    if(error.response.data.errors) {
-                        let errorTab = error.response.data.errors
-                        for (var prop in errorTab) {
-                            this.errors.push(errorTab[prop][0])
-                        }
-                    } else {
-                        this.errors.push(error.response.data)
-                    }
+                    // if(error.response.data.errors) {
+                    //     let errorTab = error.response.data.errors
+                    //     for (var prop in errorTab) {
+                    //         this.errors.push(errorTab[prop][0])
+                    //     }
+                    // } else {
+                    //     this.errors.push(error.response.data)
+                    // }
                     
-                    this.$store.commit('setErrors',this.errors)
+                    // this.$store.commit('setErrors',this.errors)
                 }
             }
         },
